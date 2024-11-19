@@ -31,21 +31,6 @@ app.post("/trips", async (req, res) => {
   }
 });
 
-app.get("/categories", async (req, res) => {
-  const categories = await prisma.category.findMany();
-  res.json(categories);
-});
-
-app.post("/categories", async (req, res) => {
-  const { name } = req.body;
-  const newCategory = await prisma.category.create({
-    data: {
-      name,
-    },
-  });
-  res.status(201).json(newCategory);
-});
-
  app.post("/events", async (req, res) => {
   const { name, time, location,category } = req.body;
   const newEvent = await prisma.event.create({
@@ -53,7 +38,6 @@ app.post("/categories", async (req, res) => {
       name,
       time,
       location,
-      category
     },
   });
   res.status(201).json(newEvent);
