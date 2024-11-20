@@ -65,12 +65,13 @@ const TripsPage: React.FC = () => {
       <div className="space-y-2">
         {trips.map((trip, index) => (
           <Link
-            key={index}
-            to={`/trip/${encodeURIComponent(trip.name)}`}
-            className="block bg-gradient-to-r from-green-300 to-customTeal px-4 py-2 rounded w-1/3 ml-1 text-customBlue font-bold"
-          >
-            {trip.name}
-          </Link>
+          key={trip.id}
+          to={`/trip/${trip.id}`} // Pass tripId instead of name
+          className="block bg-gradient-to-r from-green-300 to-customTeal px-4 py-2 rounded w-1/3 ml-1 text-customBlue font-bold"
+        >
+          {trip.name}
+        </Link>
+        
         ))}
       </div>
       {isAdding ? (
