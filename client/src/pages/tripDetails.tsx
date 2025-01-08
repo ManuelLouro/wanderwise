@@ -187,11 +187,12 @@ const TripDetails: React.FC = () => {
       {/* Toggle add event form */}
       {!isAdding && (
         <button
-          onClick={() => setIsAdding(true)}
-          className="mt-4 bg-customTeal text-customBlue px-4 py-2  rounded-full ml- font-bold shadow-xl "
-        >
-          Add Event
-        </button>
+        onClick={() => setIsAdding(true)}
+        className="mt-4 mb-2 bg-customTeal text-customBlue px-4 py-2 rounded-full font-bold shadow-xl mx-auto block"
+      >
+        Add Event
+      </button>
+      
       )}
   
       <FixedButton onClick={() => console.log("Hamburger clicked")} />
