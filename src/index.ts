@@ -108,6 +108,22 @@ app.get("/trips/:tripId/events", async (req, res) => {
   }
 });
 
+app.delete("/events/:eventId", async (req, res) => {
+  const { eventId } = req.params; // Extract eventId from the URL params
+  console.log(`Deleting event with ID: ${eventId}`); // Debugging log
+
+  try {
+    const deletedEvent = await prisma.event.delete({
+      where: { id: eventId }, // Ensure this is the correct identifier field
+    });
+    res.json(deletedEvent);
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    res.status(500).json({ error: "Failed to delete event" });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });

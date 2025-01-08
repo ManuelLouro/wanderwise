@@ -94,6 +94,27 @@ const TripDetails: React.FC = () => {
         console.error("Error adding event:", error);
       }
     };
+
+    const deleteEvent = async (eventId: string) => {
+      try {
+        const response = await fetch(`http://localhost:3000/events/${eventId}`, {
+          method: "DELETE",
+        });
+    
+        if (!response.ok) {
+          console.error("Failed to delete event:", response.statusText);
+          return;
+        }
+    
+        console.log("Event deleted successfully");
+    
+        // Refresh events list
+        fetchEvents();
+      } catch (error) {
+        console.error("Error deleting event:", error);
+      }
+    };
+    
     
 
   useEffect(() => {
@@ -108,35 +129,42 @@ const TripDetails: React.FC = () => {
       </h1>
   
       <div className="space-y-2 flex flex-col">
-        {events.length > 0 ? (
-          events.map((event) => (
-            <div key={event.id} className="border p-2 rounded shadow">
-              <h2 className="font-semibold">{event.name}</h2>
-              <p>{event.description}</p>
-              <p>
-                <strong>Location:</strong> {event.location}
-              </p>
-              <p>
-                <strong>Date:</strong> {event.date}
-              </p>
-              {event.pdfUrl && (
-                <p>
-                  <a
-                    href={event.pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline"
-                  >
-                    View PDF
-                  </a>
-                </p>
-              )}
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 ml-1">No events found</p>
+  {events.length > 0 ? (
+    events.map((event) => (
+      <div key={event.id} className="border p-2 rounded shadow">
+        <h2 className="font-semibold">{event.name}</h2>
+        <p>{event.description}</p>
+        <p>
+          <strong>Location:</strong> {event.location}
+        </p>
+        <p>
+          <strong>Date:</strong> {event.date}
+        </p>
+        {event.pdfUrl && (
+          <p>
+            <a
+              href={event.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 underline"
+            >
+              View PDF
+            </a>
+          </p>
         )}
+        <button
+          onClick={() => deleteEvent(event.id)} // Ensure the event ID is passed as a string
+          className="text-black bg-red-700 mt-2"
+        >
+          Delete
+        </button>
       </div>
+    ))
+  ) : (
+    <p className="text-gray-500 ml-1">No events available.</p>
+  )}
+</div>
+
   
       {/* Show the form conditionally */}
       {isAdding && (
