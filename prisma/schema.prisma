@@ -26,6 +26,7 @@ model Event {
   time        String?
   date        String?
   location    String?
+  pdfUrl      String?
   trip        Trip?   @relation("TripEvents", fields: [tripId], references: [id])
   tripId      String?
 }

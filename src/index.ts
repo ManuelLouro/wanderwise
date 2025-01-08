@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
 import express, { Request, Response } from "express";
+import multer, { StorageEngine } from "multer";
+import path from "path";
 
 const app = express();
 const prisma = new PrismaClient();
@@ -32,43 +34,65 @@ app.post("/trips", async (req, res) => {
 });
 
 app.get("/events", async (req, res) => {
+  const { tripId } = req.body
   try {
-    const trips = await prisma.event.findMany();
-    res.json(event);
+    const events = await prisma.event.findMany({
+      where : {
+        tripId: tripId,
+      },
+    });
+    res.json(events);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch events" });
   }
 });
-app.post("/events", async (req: Request, res: Response) => {
-  const { name, description, location, date, tripId} = req.body;
-
-  try {
-    const trip = await prisma.trip.findUnique({
-      where: {
-        id: tripId,
-      },
-    });
-
-    if (!trip) {
-      res.status(404).json({ error: "Trip not found" });
-      return
-    }
-    const newEvent = await prisma.event.create({
-      data: {
-        name,
-        description,
-        location,
-        date,
-        tripId,
-      },
-    });
-
-    res.status(201).json(newEvent);
-  } catch (error) {
-    console.error("Error creating event:", error);
-    res.status(500).json({ error: "Failed to create event" });
-  } 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "src/uploads");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
 });
+
+const upload = multer({ storage });
+
+app.post(
+  "/events",
+  upload.single("pdf"),
+  async (req: Request, res: Response) => {
+    const { name, description, location, date, tripId } = req.body;
+
+    try {
+      const trip = await prisma.trip.findUnique({
+        where: { id: tripId },
+      });
+
+      if (!trip) {
+        res.status(404).json({ error: "Trip not found" });
+        return;
+      }
+
+      const newEvent = await prisma.event.create({
+        data: {
+          name,
+          description,
+          location,
+          date,
+          tripId,
+          pdfUrl: req.file ? `/uploads/${req.file.filename}` : null,
+        },
+      });
+
+      res.status(201).json(newEvent);
+    } catch (error) {
+      console.error("Error creating event:", error);
+      res.status(500).json({ error: "Failed to create event" });
+    }
+  }
+);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.get("/trips/:tripId/events", async (req, res) => {
   const { tripId } = req.params;
 
@@ -83,7 +107,6 @@ app.get("/trips/:tripId/events", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch events" });
   }
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

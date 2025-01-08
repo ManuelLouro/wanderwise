@@ -66,7 +66,7 @@ const TripsPage: React.FC = () => {
         {trips.map((trip, index) => (
           <Link
           key={trip.id}
-          to={`/trip/${trip.id}`} // Pass tripId instead of name
+          to={`/trip/${trip.id}`} 
           className="block bg-gradient-to-r from-green-300 to-customTeal px-4 py-2 rounded w-1/3 ml-1 text-customBlue font-bold"
         >
           {trip.name}

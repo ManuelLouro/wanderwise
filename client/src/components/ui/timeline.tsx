@@ -5,14 +5,13 @@ import {
 import "react-vertical-timeline-component/style.min.css";
 import React from "react";
 
-
-
 type Event = {
   id: string;
   name: string;
   location?: string;
   description?: string;
   date?: string;
+  pdfUrl?: string;
 };
 
 type TimelineProps = {
@@ -30,8 +29,21 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
           icon={<div></div>}
         >
           <h3 className="text-lg font-bold">{event.name}</h3>
-          <h4 className="text-sm font-semibold">{event.location || "No location"}</h4>
+          <h4 className="text-sm font-semibold">
+            {event.location || "No location"}
+          </h4>
           <p>{event.description || "No description"}</p>
+
+          {event.pdfUrl && (
+            <a
+            href={`http://localhost:3000${event.pdfUrl}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-block text-blue-500 underline ml-40"
+            >
+              View PDF
+            </a>
+          )}
         </VerticalTimelineElement>
       ))}
     </VerticalTimeline>
@@ -39,7 +51,3 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
 };
 
 export default Timeline;
-    
-
-    
-

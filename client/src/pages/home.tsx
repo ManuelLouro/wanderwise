@@ -2,7 +2,6 @@ import { NavBar } from "../components/ui/navbar.tsx";
 import "../index.css";
 import Hamburger from "../components/hamburger.tsx";
 import FixedButton from "../components/fixedbutton.tsx";
-import Calendar2 from "../components/reactcalendar.tsx";
 import { Calendar } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Timeline from "../components/ui/timeline.tsx";
@@ -25,7 +24,7 @@ const HomePage: React.FC = () => {
   const [selectedTrip, setSelectedTrip] = useState<string>("");
   const [events, setEvents] = useState<Event[]>([]);
 
-  // Fetch trips from the backend
+  
   const fetchTrips = async () => {
     try {
       const response = await fetch("http://localhost:3000/trips");
@@ -36,7 +35,7 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // Fetch events for the selected trip
+  
   const fetchEvents = async (tripId: string) => {
     try {
       const response = await fetch(`http://localhost:3000/trips/${tripId}/events`);
@@ -51,7 +50,6 @@ const HomePage: React.FC = () => {
     fetchTrips();
   }, []);
 
-  // Fetch events when a trip is selected
   useEffect(() => {
     if (selectedTrip) {
       fetchEvents(selectedTrip);
@@ -87,7 +85,7 @@ const HomePage: React.FC = () => {
         ))}
       </select>
 
-      {/* Pass the events to the Timeline component */}
+      
       <Timeline events={events} />
 
       <FixedButton onClick={handleClick} />
