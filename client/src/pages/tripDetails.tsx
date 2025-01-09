@@ -153,8 +153,8 @@ const TripDetails: React.FC = () => {
           </p>
         )}
         <button
-          onClick={() => deleteEvent(event.id)} // Ensure the event ID is passed as a string
-          className="text-black bg-red-700 mt-2"
+          onClick={() => deleteEvent(event.id)} 
+          className="text-black bg-red-800 mt-2"
         >
           Delete
         </button>
