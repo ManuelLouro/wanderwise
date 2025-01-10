@@ -15,6 +15,7 @@ const CalendarPage:React.FC = () => {
         <NavBar></NavBar>
         <div className="flex">
             <div>
+                <h1 className=" bg-black text-white"> Your calendar: </h1>
             <Calendar></Calendar>
             </div>
         <FixedButton onClick={handleClick}></FixedButton>
