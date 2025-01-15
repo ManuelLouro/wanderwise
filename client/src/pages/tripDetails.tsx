@@ -145,7 +145,7 @@ const TripDetails: React.FC = () => {
                     rel="noopener noreferrer"
                     className="text-blue-500 underline"
                   >
-                    View PDF
+                    Open PDF
                   </a>
                 </p>
               )}
@@ -158,7 +158,7 @@ const TripDetails: React.FC = () => {
             </div>
           ))
         ) : (
-          <p className="text-gray-500 ml-1">No events available.</p>
+          <p className="text-gray-500 ml-1">No events for this trip</p>
         )}
       </div>
 
