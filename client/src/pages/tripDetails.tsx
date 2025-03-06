@@ -151,7 +151,7 @@ const TripDetails: React.FC = () => {
               )}
               <button
                 onClick={() => deleteEvent(event.id)}
-                className=" text-m text-white bg-red-600 mt-2 rounded font-semibold shadow-xl w-[15%] ml-1"
+                className=" text-m text-white bg-red-700 mt-2 rounded font-semibold shadow-xl w-[15%] ml-1"
               >
                 Remove
               </button>
