@@ -5,6 +5,7 @@ import FixedButton from "../components/fixedbutton.tsx";
 import { Calendar } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Timeline from "../components/ui/timeline.tsx";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 type Trip = {
   id: string;
@@ -23,8 +24,8 @@ const HomePage: React.FC = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<string>("");
   const [events, setEvents] = useState<Event[]>([]);
+  const navigate = useNavigate(); // Initialize navigate
 
-  
   const fetchTrips = async () => {
     try {
       const response = await fetch("http://localhost:3000/trips");
@@ -35,7 +36,6 @@ const HomePage: React.FC = () => {
     }
   };
 
-  
   const fetchEvents = async (tripId: string) => {
     try {
       const response = await fetch(`http://localhost:3000/trips/${tripId}/events`);
@@ -65,6 +65,10 @@ const HomePage: React.FC = () => {
     console.log("Hamburger button clicked");
   };
 
+  const goToTripsPage = () => {
+    navigate("/trips"); // Navigate to trips page
+  };
+
   return (
     <>
       <div>
@@ -85,7 +89,13 @@ const HomePage: React.FC = () => {
         ))}
       </select>
 
-      
+      <button
+        onClick={goToTripsPage}
+        className="mt-4 ml-1 bg-customBlue text-white font-bold py-2 px-4 rounded"
+      >
+        Go to Trips
+      </button>
+
       <Timeline events={events} />
 
       <FixedButton onClick={handleClick} />
