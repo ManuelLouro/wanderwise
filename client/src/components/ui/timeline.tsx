@@ -28,6 +28,7 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
           iconClassName="bg-customTeal text-white"
           icon={<div></div>}
         >
+          <div className="">
           <h3 className="text-lg font-bold">{event.name}</h3>
           <h4 className="text-sm font-semibold">
             {event.location || "No location"}
@@ -36,7 +37,7 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
 
           {event.pdfUrl && (
             <a
-            href={`http://localhost:3000${event.pdfUrl}`}
+              href={`http://localhost:3000${event.pdfUrl}`}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-2 inline-block text-blue-500 underline ml-40"
@@ -44,6 +45,7 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
               View PDF
             </a>
           )}
+          </div>
         </VerticalTimelineElement>
       ))}
     </VerticalTimeline>
