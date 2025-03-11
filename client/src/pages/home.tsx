@@ -89,12 +89,15 @@ const HomePage: React.FC = () => {
         ))}
       </select>
 
-      <button
-        onClick={goToTripsPage}
-        className="mt-4 ml-1 bg-customBlue text-white font-bold py-2 px-4 rounded"
-      >
-        Go to Trips
-      </button>
+      <div className="flex justify-center mt-6">
+  <button
+    onClick={goToTripsPage}
+    className="bg-customBlue text-white font-bold py-2 px-4 rounded"
+  >
+    Go to Trips
+  </button>
+</div>
+
 
       <Timeline events={events} />
 
