@@ -13,14 +13,7 @@ const Profile: React.FC = () => {
             placeholder="Enter your name"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            className="w-full p-2 border rounded"
-            placeholder="Enter your email"
-          />
-        </div>
+        
         <div>
           <label className="block text-sm font-medium">Phone</label>
           <input
