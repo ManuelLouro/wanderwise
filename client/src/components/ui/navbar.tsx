@@ -2,7 +2,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Hamburger from "../hamburger";
 
 function NavBar() {
-  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
+  console.log("User isAuthenticated:", isAuthenticated);
 
   return (
     <nav className="bg-gradient-to-r from-customTeal to-green-300 h-15 w-full flex items-center px-4 shadow-xl">
@@ -10,17 +11,17 @@ function NavBar() {
       <h1 className="text-customBlue font-medium mt-1 text-xl ml-4">
         WanderWise
       </h1>
-      
+
       <div className="ml-auto flex space-x-4">
         {!isAuthenticated ? (
           <>
-            {/* Redirects to sign-up page */}
+            {/* Register button */}
             <button
               onClick={() =>
                 loginWithRedirect({
                   authorizationParams: {
                     screen_hint: "signup",
-                    redirect_uri: "http://localhost:5173/callback", // Ensure matches Auth0
+                    redirect_uri: "http://localhost:5173/callback",
                   },
                 })
               }
@@ -29,7 +30,7 @@ function NavBar() {
               Register
             </button>
 
-            {/* Standard login */}
+            {/* Login button */}
             <button
               onClick={() =>
                 loginWithRedirect({
@@ -42,14 +43,19 @@ function NavBar() {
             </button>
           </>
         ) : (
-          <button
-            onClick={() =>
-              logout({ logoutParams: { returnTo: "http://localhost:5173" } })
-            }
-            className="w-19 h-8 rounded-xl py-1 px-2 bg-red-500 text-white font-medium"
-          >
-            Logout
-          </button>
+          /* If logged in, show user info and logout button */
+          <div className="flex items-center space-x-4">
+            <img src={user?.picture} alt="Profile" className="h-10 w-10 rounded-full" />
+            <span className="text-customBlue font-medium">{user?.name}</span>
+            <button
+              onClick={() =>
+                logout({ logoutParams: { returnTo: "http://localhost:5173" } })
+              }
+              className="w-19 h-8 rounded-xl py-1 px-2 bg-red-500 text-white font-medium"
+            >
+              Logout
+            </button>
+          </div>
         )}
       </div>
     </nav>
