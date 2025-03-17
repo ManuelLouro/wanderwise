@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 import multer, { StorageEngine } from "multer";
 import path from "path";
 import { auth } from 'express-openid-connect';
+const { requiresAuth } = require('express-openid-connect');
 
 
 const app = express();
@@ -23,6 +24,12 @@ const config = {
 
 app.use(express.json());
 app.use(cors());
+app.use(auth(config)); 
+
+
+app.get('/profile', requiresAuth(), (req, res) => {
+  res.send(JSON.stringify(req.oidc.user));
+});
 
 
 app.get('/', (req, res) => {

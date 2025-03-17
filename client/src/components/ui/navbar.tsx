@@ -14,15 +14,28 @@ function NavBar() {
       <div className="ml-auto flex space-x-4">
         {!isAuthenticated ? (
           <>
+            {/* Redirects to sign-up page */}
             <button
-              onClick={() => loginWithRedirect()}
+              onClick={() =>
+                loginWithRedirect({
+                  authorizationParams: {
+                    screen_hint: "signup",
+                    redirect_uri: "http://localhost:5173/callback", // Ensure matches Auth0
+                  },
+                })
+              }
               className="w-19 h-8 rounded-xl py-1 px-2 bg-customTeal text-customBlue font-medium"
             >
               Register
             </button>
 
+            {/* Standard login */}
             <button
-              onClick={() => loginWithRedirect()}
+              onClick={() =>
+                loginWithRedirect({
+                  authorizationParams: { redirect_uri: "http://localhost:5173/callback" },
+                })
+              }
               className="w-19 h-8 rounded-xl py-1 px-2 bg-customTeal text-customBlue font-medium"
             >
               Login
@@ -30,7 +43,9 @@ function NavBar() {
           </>
         ) : (
           <button
-            onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+            onClick={() =>
+              logout({ logoutParams: { returnTo: "http://localhost:5173" } })
+            }
             className="w-19 h-8 rounded-xl py-1 px-2 bg-red-500 text-white font-medium"
           >
             Logout
