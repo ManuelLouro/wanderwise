@@ -3,13 +3,31 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import multer, { StorageEngine } from "multer";
 import path from "path";
+import { auth } from 'express-openid-connect';
+
 
 const app = express();
 const prisma = new PrismaClient();
 const port = 3000;
 
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: process.env.AUTH0_SECRET,
+  baseURL: process.env.BASE_URL,
+  clientID: process.env.AUTH0_CLIENT_ID,
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
+};
+
+
+
 app.use(express.json());
 app.use(cors());
+
+
+app.get('/', (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+});
 
 app.get("/trips", async (req, res) => {
   try {
