@@ -19,6 +19,8 @@ type TimelineProps = {
 };
 
 const Timeline: React.FC<TimelineProps> = ({ events }) => {
+  if (events.length === 0) return null; // Prevents rendering empty timeline
+
   return (
     <VerticalTimeline>
       {events.map((event) => (
@@ -28,23 +30,23 @@ const Timeline: React.FC<TimelineProps> = ({ events }) => {
           iconClassName="bg-customTeal text-white"
           icon={<div></div>}
         >
-          <div className="">
-          <h3 className="text-lg font-bold">{event.name}</h3>
-          <h4 className="text-sm font-semibold">
-            {event.location || "No location"}
-          </h4>
-          <p>{event.description || "No description"}</p>
+          <div>
+            <h3 className="text-lg font-bold">{event.name}</h3>
+            <h4 className="text-sm font-semibold">
+              {event.location || "No location"}
+            </h4>
+            <p>{event.description || "No description"}</p>
 
-          {event.pdfUrl && (
-            <a
-              href={`http://localhost:3000${event.pdfUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-2 inline-block text-blue-500 underline ml-40"
-            >
-              View PDF
-            </a>
-          )}
+            {event.pdfUrl && (
+              <a
+                href={`http://localhost:3000${event.pdfUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block text-blue-500 underline ml-40"
+              >
+                View PDF
+              </a>
+            )}
           </div>
         </VerticalTimelineElement>
       ))}
