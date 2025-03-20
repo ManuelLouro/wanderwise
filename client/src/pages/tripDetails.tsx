@@ -88,7 +88,7 @@ const TripDetails: React.FC = () => {
 
       // Refetch events and hide the form
       await fetchEvents();
-      setIsAdding(false); // Reset isAdding to false
+      setIsAdding(false);
     } catch (error) {
       console.error("Error adding event:", error);
     }
@@ -125,16 +125,19 @@ const TripDetails: React.FC = () => {
         Events for Trip
       </h1>
 
-      <div className="space-y-2 flex flex-col">
+      <div className="space-y-4 flex flex-col">
         {events.length > 0 ? (
           events.map((event) => (
-            <div key={event.id} className="border p-2 rounded shadow">
-              <h2 className="font-semibold">{event.name}</h2>
-              <p>{event.description}</p>
-              <p>
+            <div
+              key={event.id}
+              className="border p-4 rounded-xl shadow-lg bg-white"
+            >
+              <h2 className="font-semibold text-lg">{event.name}</h2>
+              <p className="text-gray-700">{event.description}</p>
+              <p className="text-gray-600">
                 <strong>Location:</strong> {event.location}
               </p>
-              <p>
+              <p className="text-gray-600">
                 <strong>Date:</strong> {event.date}
               </p>
               {event.pdfUrl && (
@@ -151,7 +154,7 @@ const TripDetails: React.FC = () => {
               )}
               <button
                 onClick={() => deleteEvent(event.id)}
-                className=" text-m text-white bg-red-700 mt-2 rounded font-semibold shadow-xl w-[15%] ml-1"
+                className="mt-3 bg-red-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:bg-red-700 transition"
               >
                 Remove
               </button>
@@ -200,7 +203,7 @@ const TripDetails: React.FC = () => {
             Add
           </button>
           <button
-            onClick={() => setIsAdding(false)} // Cancel button to return to the event list
+            onClick={() => setIsAdding(false)}
             className="bg-red-300 text-customBlue px-4 py-2 rounded font-semibold shadow-xl w-[20%] ml-1 mt-2"
           >
             Cancel
