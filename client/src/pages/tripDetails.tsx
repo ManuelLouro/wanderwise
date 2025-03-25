@@ -214,7 +214,7 @@ const TripDetails: React.FC = () => {
         </div>
       )}
 
-      {/* Toggle add event form */}
+
       {!isAdding && (
         <button
           onClick={() => setIsAdding(true)}
