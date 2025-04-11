@@ -224,7 +224,7 @@ const TripDetails: React.FC = () => {
         </button>
       )}
 
-      <FixedButton onClick={() => console.log("Hamburger clicked")} />
+      <FixedButton onClick={() => console.log("Hamburger was clicked")} />
     </div>
   );
 };
