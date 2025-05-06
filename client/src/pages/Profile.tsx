@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { CheckCircle } from "lucide-react"; // ou use qualquer ícone SVG de sua preferência
 
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
-    name: "John Doe", // default value simulating fetched data
+    name: "John Doe",
     phone: "+1234567890",
   });
 
   const [message, setMessage] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -15,39 +17,52 @@ const Profile: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // simulate saving logic (e.g. API call)
+    setIsSaving(true);
+    setMessage("");
     setTimeout(() => {
+      setIsSaving(false);
       setMessage("Profile updated successfully!");
-    }, 500);
+    }, 1000);
   };
 
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(""), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   return (
-    <div className="p-4 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Profile</h1>
-      <form className="space-y-4" onSubmit={handleSubmit}>
+    <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow">
+      <h1 className="text-2xl font-semibold mb-6 text-center">Edit Profile</h1>
+      <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name" className="block text-sm font-medium">Name</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            Name
+          </label>
           <input
             id="name"
             name="name"
             type="text"
             value={formData.name}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="mt-1 w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
             placeholder="Enter your name"
             required
           />
         </div>
-        
+
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium">Phone</label>
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+            Phone
+          </label>
           <input
             id="phone"
             name="phone"
             type="tel"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full p-2 border rounded"
+            className="mt-1 w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none"
             placeholder="Enter your phone number"
             required
           />
@@ -55,12 +70,20 @@ const Profile: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full p-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+          disabled={isSaving}
+          className={`w-full py-2 px-4 rounded-md text-white font-medium transition ${
+            isSaving ? "bg-blue-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
-          Save
+          {isSaving ? "Saving..." : "Save"}
         </button>
 
-        {message && <p className="text-green-600 text-sm mt-2">{message}</p>}
+        {message && (
+          <div className="flex items-center gap-2 text-green-600 text-sm mt-2 animate-fade-in">
+            <CheckCircle className="w-4 h-4" />
+            <span>{message}</span>
+          </div>
+        )}
       </form>
     </div>
   );
