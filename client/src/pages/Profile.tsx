@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CheckCircle } from "lucide-react"; // ou use qualquer ícone SVG de sua preferência
+import { CheckCircle } from "lucide-react"; 
 
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
