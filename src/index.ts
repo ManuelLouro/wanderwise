@@ -28,8 +28,10 @@ const config = {
   clientID: "FovbtxuYZfeIUFK48CUCJK7UU81fNg5N",
   issuerBaseURL: "https://dev-lqnqnxi15ialiyks.us.auth0.com",
   routes: {
-    postLogoutRedirect: "http://localhost:5173",
-  },
+    callback: '/callback',
+    postLoginRedirect: 'http://localhost:5173',  
+    postLogoutRedirect: 'http://localhost:5173' 
+  }
 };
 
 app.use(express.json());
