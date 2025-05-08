@@ -5,6 +5,7 @@ import multer, { StorageEngine } from "multer";
 import path from "path";
 import { auth } from "express-openid-connect";
 const { requiresAuth } = require("express-openid-connect");
+import { Session, AfterCallback } from "express-openid-connect";
 
 const app = express();
 const prisma = new PrismaClient();
@@ -23,20 +24,26 @@ const config = {
 const config = {
   authRequired: false,
   auth0Logout: true,
-  secret: "a long, randomly-generated string stored in env",
+  secret: process.env.AUTH0_SECRET,
   baseURL: "http://localhost:3000",
-  clientID: "FovbtxuYZfeIUFK48CUCJK7UU81fNg5N",
-  issuerBaseURL: "https://dev-lqnqnxi15ialiyks.us.auth0.com",
+  clientID: process.env.AUTH0_CLIENT_ID,
+  issuerBaseURL: process.env.AUTH0_ISSUER,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET,
   routes: {
-    callback: '/callback',
-    postLoginRedirect: 'http://localhost:5173',  
-    postLogoutRedirect: 'http://localhost:5173' 
-  }
+    callback: "/callback",
+  },
+  AfterCallback: (req: Request, res: Response, session: Session) => {
+    return session;
+  },
 };
 
 app.use(express.json());
 app.use(cors());
 app.use(auth(config));
+
+app.get("/callback", (req, res) => {
+  res.redirect("http://localhost:5173");
+});
 
 app.get("/profile", requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
