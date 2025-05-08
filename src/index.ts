@@ -3,14 +3,13 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import multer, { StorageEngine } from "multer";
 import path from "path";
-import { auth } from 'express-openid-connect';
-const { requiresAuth } = require('express-openid-connect');
-
+import { auth } from "express-openid-connect";
+const { requiresAuth } = require("express-openid-connect");
 
 const app = express();
 const prisma = new PrismaClient();
 const port = 3000;
-
+/* 
 const config = {
   authRequired: false,
   auth0Logout: true,
@@ -19,21 +18,30 @@ const config = {
   clientID: process.env.AUTH0_CLIENT_ID,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
 };
+*/
 
-
+const config = {
+  authRequired: false,
+  auth0Logout: true,
+  secret: "a long, randomly-generated string stored in env",
+  baseURL: "http://localhost:3000",
+  clientID: "FovbtxuYZfeIUFK48CUCJK7UU81fNg5N",
+  issuerBaseURL: "https://dev-lqnqnxi15ialiyks.us.auth0.com",
+  routes: {
+    postLogoutRedirect: "http://localhost:5173",
+  },
+};
 
 app.use(express.json());
 app.use(cors());
-app.use(auth(config)); 
+app.use(auth(config));
 
-
-app.get('/profile', requiresAuth(), (req, res) => {
+app.get("/profile", requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));
 });
 
-
-app.get('/', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
+app.get("/", (req, res) => {
+  res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
 });
 
 app.get("/trips", async (req, res) => {
@@ -59,10 +67,10 @@ app.post("/trips", async (req, res) => {
 });
 
 app.get("/events", async (req, res) => {
-  const { tripId } = req.body
+  const { tripId } = req.body;
   try {
     const events = await prisma.event.findMany({
-      where : {
+      where: {
         tripId: tripId,
       },
     });
@@ -147,7 +155,6 @@ app.delete("/events/:eventId", async (req, res) => {
     res.status(500).json({ error: "Failed to delete event" });
   }
 });
-
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
