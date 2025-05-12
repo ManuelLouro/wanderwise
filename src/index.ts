@@ -5,7 +5,9 @@ import multer, { StorageEngine } from "multer";
 import path from "path";
 import { auth } from "express-openid-connect";
 const { requiresAuth } = require("express-openid-connect");
-import { Session, AfterCallback } from "express-openid-connect";
+import { Session } from "express-openid-connect";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const prisma = new PrismaClient();
@@ -27,12 +29,14 @@ const config = {
   secret: process.env.AUTH0_SECRET,
   baseURL: "http://localhost:3000",
   clientID: process.env.AUTH0_CLIENT_ID,
-  issuerBaseURL: process.env.AUTH0_ISSUER,
+  issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
   routes: {
     callback: "/callback",
   },
-  AfterCallback: (req: Request, res: Response, session: Session) => {
+
+  afterCallback: (req: Request, res: Response, session: Session) => {
+    session.returnTo = "http://localhost:5173";
     return session;
   },
 };
@@ -40,6 +44,10 @@ const config = {
 app.use(express.json());
 app.use(cors());
 app.use(auth(config));
+
+app.get("/login", (req, res) =>
+  res.oidc.login({ returnTo: "http://localhost:5173" })
+);
 
 app.get("/callback", (req, res) => {
   res.redirect("http://localhost:5173");
