@@ -1,28 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth0 } from "@auth0/auth0-react"; // Import Auth0 hooks
 import Hamburger from "../hamburger";
 
 function NavBar() {
-  const [user, setUser] = useState(null);
+  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();  // Use Auth0 hooks
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(false);
 
-  // Fetch profile from backend
+  // Check if the user is authenticated
   useEffect(() => {
-    fetch("http://localhost:3000/profile", {
-      credentials: "include", // Important to include session cookie
-    })
-      .then((res) => {
-        if (res.ok) return res.json();
-        throw new Error("Not authenticated");
-      })
-      .then((data) => setUser(data))
-      .catch(() => setUser(null));
-  }, []);
+    setIsUserAuthenticated(isAuthenticated);
+  }, [isAuthenticated]);
 
   const handleLogin = () => {
-    window.location.href = "http://localhost:3000/login";
+    loginWithRedirect();  // No need to pass redirect_uri here
   };
 
   const handleLogout = () => {
-    window.location.href = "http://localhost:3000/logout";
+    logout(); // Simply logout without returnTo
+    window.location.href = window.location.origin; // Manually redirect to the home page after logout
   };
 
   return (
@@ -31,7 +26,7 @@ function NavBar() {
       <h1 className="text-customBlue font-medium mt-1 text-xl ml-4">WanderWise</h1>
 
       <div className="ml-auto flex space-x-4">
-        {!user ? (
+        {!isUserAuthenticated ? (
           <>
             {/* Login & Register both go to /login */}
             <button
@@ -50,8 +45,8 @@ function NavBar() {
           </>
         ) : (
           <div className="flex items-center space-x-4">
-            <img  alt="Profile" className="h-10 w-10 rounded-full" />
-            <span className="text-customBlue font-medium"></span>
+            <img alt="Profile" className="h-10 w-10 rounded-full" />
+            <span className="text-customBlue font-medium">{user?.name}</span>
             <button
               onClick={handleLogout}
               className="w-19 h-8 rounded-xl py-1 px-2 bg-red-500 text-white font-medium"

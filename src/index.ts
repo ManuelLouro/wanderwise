@@ -45,6 +45,8 @@ app.use(express.json());
 app.use(cors());
 app.use(auth(config));
 
+
+
 app.get("/login", (req, res) =>
   res.oidc.login({ returnTo: "http://localhost:5173" })
 );
