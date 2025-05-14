@@ -1,6 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
-import express, { Request, Response, RequestHandler } from "express";
+import express, {
+  Request,
+  Response,
+  RequestHandler,
+  NextFunction,
+} from "express";
 import multer, { StorageEngine } from "multer";
 import path from "path";
 import { auth } from "express-openid-connect";
@@ -71,53 +76,82 @@ app.use(express.json());
 app.use(cors());
 app.use(auth(config));
 
-app.put(
-  "/profile",
-  requiresAuth(),
-  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      // Step 1: Check for user
-      const user = req.oidc?.user;
-      if (!user || !user.sub) {
-        res.status(401).json({ error: "User not authenticated" });
-        return;
-      }
-
-      // Step 2: Validate input
-      const { name, phone } = req.body;
-      if (typeof name !== "string") {
-        res.status(400).json({ error: "Invalid input data" });
-        return;
-      }
-
-      // Step 3: Update profile
-      const updated = await prisma.profile.update({
-        where: { auth0Id: user.sub },
-        data: { name },
-      });
-
-      // Step 4: Return updated profile
-      res.json(updated);
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-      next(error); // or res.status(500).json({ error: "Failed to update profile" });
+app.get("/profile", requiresAuth(), async (req: Request, res: Response) => {
+  try {
+    const user = req.oidc?.user;
+    if (!user || !user.sub) {
+      res.status(401).json({ error: "User not authenticated" });
+      return;
     }
+
+    const profile = await prisma.profile.findUnique({
+      where: { auth0Id: user.sub },
+    });
+
+    if (!profile) {
+      res.status(404).json({ error: "Profile not found" });
+      return;
+    }
+
+    res.json(profile);
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ error: "Failed to fetch profile" });
   }
-);
+});
+
+// Update current user's profile
+app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
+  try {
+    const user = req.oidc?.user;
+    if (!user || !user.sub) {
+      res.status(401).json({ error: "User not authenticated" });
+      return;
+    }
+
+    const { name, email } = req.body;
+
+    if (typeof name !== "string") {
+      res.status(400).json({ error: "Invalid name" });
+      return;
+    }
+
+    const updated = await prisma.profile.update({
+      where: { auth0Id: user.sub },
+      data: { name, email },
+    });
+
+    res.json(updated);
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
+app.get("/profile", requiresAuth(), async (req: Request, res: Response) => {
+  const user = req.oidc.user;
+  if (!user || !user.sub) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: { auth0Id: user.sub },
+    });
+
+    if (!profile) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+
+    res.json(profile);
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+});
+
 
 app.get("/login", (req, res) => res.oidc.login({ returnTo: "/" }));
-
-const profileHandler: RequestHandler = (req: Request, res: Response): void => {
-  const user: any | undefined = req.oidc.user;
-
-  if (!user) {
-    res.status(401).json({ error: "User not authenticated" });
-    return;
-  }
-
-  res.json(user);
-};
-app.get("/profile", requiresAuth(), profileHandler);
 
 app.get("/", (req, res) => {
   res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
@@ -144,6 +178,7 @@ app.post("/trips", async (req, res) => {
     res.status(500).json({ error: "Failed to create trip" });
   }
 });
+
 
 app.get("/events", async (req, res) => {
   const { tripId } = req.body;
