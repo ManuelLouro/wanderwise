@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import cors from "cors";
-import express, { Request, Response } from "express";
+import express, { Request, Response, RequestHandler } from "express";
 import multer, { StorageEngine } from "multer";
 import path from "path";
 import { auth } from "express-openid-connect";
-const { requiresAuth } = require("express-openid-connect");
+import { requiresAuth } from "express-openid-connect";
 import { Session } from "express-openid-connect";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const app = express();
@@ -22,6 +23,12 @@ const config = {
   issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
 };
 */
+interface OIDCUser {
+  sub: string;
+  name: string;
+  email: string;
+  [key: string]: any;
+}
 
 const config = {
   authRequired: false,
@@ -64,11 +71,53 @@ app.use(express.json());
 app.use(cors());
 app.use(auth(config));
 
+app.put(
+  "/profile",
+  requiresAuth(),
+  async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      // Step 1: Check for user
+      const user = req.oidc?.user;
+      if (!user || !user.sub) {
+        res.status(401).json({ error: "User not authenticated" });
+        return;
+      }
+
+      // Step 2: Validate input
+      const { name, phone } = req.body;
+      if (typeof name !== "string") {
+        res.status(400).json({ error: "Invalid input data" });
+        return;
+      }
+
+      // Step 3: Update profile
+      const updated = await prisma.profile.update({
+        where: { auth0Id: user.sub },
+        data: { name },
+      });
+
+      // Step 4: Return updated profile
+      res.json(updated);
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      next(error); // or res.status(500).json({ error: "Failed to update profile" });
+    }
+  }
+);
+
 app.get("/login", (req, res) => res.oidc.login({ returnTo: "/" }));
 
-app.get("/profile", requiresAuth(), (req, res) => {
-  res.send(JSON.stringify(req.oidc.user));
-});
+const profileHandler: RequestHandler = (req: Request, res: Response): void => {
+  const user: any | undefined = req.oidc.user;
+
+  if (!user) {
+    res.status(401).json({ error: "User not authenticated" });
+    return;
+  }
+
+  res.json(user);
+};
+app.get("/profile", requiresAuth(), profileHandler);
 
 app.get("/", (req, res) => {
   res.send(req.oidc.isAuthenticated() ? "Logged in" : "Logged out");
