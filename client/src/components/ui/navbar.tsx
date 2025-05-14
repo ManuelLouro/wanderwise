@@ -1,23 +1,27 @@
-import { useState, useEffect } from "react";
-import { useAuth0 } from "@auth0/auth0-react"; // Import Auth0 hooks
+import { useEffect, useState } from "react";
 import Hamburger from "../hamburger";
 
 function NavBar() {
-  const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();  // Use Auth0 hooks
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(false);
+  const [user, setUser] = useState(null);
 
-  // Check if the user is authenticated
   useEffect(() => {
-    setIsUserAuthenticated(isAuthenticated);
-  }, [isAuthenticated]);
+    fetch("http://localhost:3000/profile", {
+      credentials: "include", 
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error("Not authenticated");
+      })
+      .then((data) => setUser(data))
+      .catch(() => setUser(null));
+  }, []);
 
   const handleLogin = () => {
-    loginWithRedirect();  // No need to pass redirect_uri here
+    window.location.href = "http://localhost:3000/login";
   };
 
   const handleLogout = () => {
-    logout(); // Simply logout without returnTo
-    window.location.href = window.location.origin; // Manually redirect to the home page after logout
+    window.location.href = "http://localhost:3000/logout";
   };
 
   return (
@@ -26,7 +30,7 @@ function NavBar() {
       <h1 className="text-customBlue font-medium mt-1 text-xl ml-4">WanderWise</h1>
 
       <div className="ml-auto flex space-x-4">
-        {!isUserAuthenticated ? (
+        {!user ? (
           <>
             {/* Login & Register both go to /login */}
             <button
@@ -45,8 +49,8 @@ function NavBar() {
           </>
         ) : (
           <div className="flex items-center space-x-4">
-            <img alt="Profile" className="h-10 w-10 rounded-full" />
-            <span className="text-customBlue font-medium">{user?.name}</span>
+            <img  alt="Profile" className="h-10 w-10 rounded-full" />
+            <span className="text-customBlue font-medium"></span>
             <button
               onClick={handleLogout}
               className="w-19 h-8 rounded-xl py-1 px-2 bg-red-500 text-white font-medium"

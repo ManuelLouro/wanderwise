@@ -35,7 +35,26 @@ const config = {
     callback: "/callback",
   },
 
-  afterCallback: (req: Request, res: Response, session: Session) => {
+  afterCallback: async (req: Request, res: Response, session: any) => {
+    const user = session.user;
+    if (!user) return session;
+
+    const { sub, name, email } = user;
+
+    const existing = await prisma.profile.findUnique({
+      where: { auth0Id: sub },
+    });
+
+    if (!existing) {
+      await prisma.profile.create({
+        data: {
+          auth0Id: sub,
+          name,
+          email,
+        },
+      });
+    }
+
     session.returnTo = "http://localhost:5173";
     return session;
   },
@@ -45,15 +64,7 @@ app.use(express.json());
 app.use(cors());
 app.use(auth(config));
 
-
-
-app.get("/login", (req, res) =>
-  res.oidc.login({ returnTo: "http://localhost:5173" })
-);
-
-app.get("/callback", (req, res) => {
-  res.redirect("http://localhost:5173");
-});
+app.get("/login", (req, res) => res.oidc.login({ returnTo: "/" }));
 
 app.get("/profile", requiresAuth(), (req, res) => {
   res.send(JSON.stringify(req.oidc.user));

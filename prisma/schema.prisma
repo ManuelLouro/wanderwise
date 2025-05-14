@@ -30,3 +30,13 @@ model Event {
   trip        Trip?   @relation("TripEvents", fields: [tripId], references: [id])
   tripId      String?
 }
+
+model Profile {
+  id        String   @id @default(uuid())
+  auth0Id   String   @unique
+  name      String?
+  email     String?  @unique
+  createdAt DateTime @default(now())
+
+}
+
