@@ -73,11 +73,14 @@ const config = {
 };
 
 app.use(express.json());
-app.use(cors());
 app.use(auth(config));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
-
-// Update current user's profile
 app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
   try {
     const user = req.oidc?.user;
@@ -105,33 +108,27 @@ app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
   }
 });
 
-app.get(
-  "/profile",
-  requiresAuth(),
-  (async (req, res) => {
-    const user = req.oidc?.user;
-    if (!user || !user.sub) {
-      return res.status(401).json({ error: "Not authenticated" });
+app.get("/profile", requiresAuth(), (async (req, res) => {
+  const user = req.oidc?.user;
+  if (!user || !user.sub) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  try {
+    const profile = await prisma.profile.findUnique({
+      where: { auth0Id: user.sub },
+    });
+
+    if (!profile) {
+      return res.status(404).json({ error: "Profile not found" });
     }
 
-    try {
-      const profile = await prisma.profile.findUnique({
-        where: { auth0Id: user.sub },
-      });
-
-      if (!profile) {
-        return res.status(404).json({ error: "Profile not found" });
-      }
-
-      res.json(profile);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      res.status(500).json({ error: "Failed to fetch profile" });
-    }
-  }) as express.RequestHandler
-);
-
-
+    res.json(profile);
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+}) as express.RequestHandler);
 
 app.get("/login", (req, res) => res.oidc.login({ returnTo: "/" }));
 
@@ -160,7 +157,6 @@ app.post("/trips", async (req, res) => {
     res.status(500).json({ error: "Failed to create trip" });
   }
 });
-
 
 app.get("/events", async (req, res) => {
   const { tripId } = req.body;
