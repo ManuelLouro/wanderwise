@@ -36,7 +36,8 @@ model Profile {
   auth0Id   String   @unique
   name      String?
   email     String?  @unique
+  phone     String?  
   createdAt DateTime @default(now())
-
 }
+
 

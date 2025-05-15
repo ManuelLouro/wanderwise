@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle, Pencil } from "lucide-react";
+import { fetchAuthSession } from "aws-amplify/auth";
 
 const Profile: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -11,12 +12,21 @@ const Profile: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
 
-  // Fetch profile data from API
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("http://localhost:3000/profile");
+        const session = await fetchAuthSession();
+        const token = session.tokens?.accessToken?.toString();
+
+        const res = await fetch("http://localhost:3000/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+
         const data = await res.json();
+
         setFormData({
           name: data.name || "",
           phone: data.phone || "",
@@ -70,7 +80,10 @@ const Profile: React.FC = () => {
       <h1 className="text-2xl font-semibold mb-6 text-center">Profile</h1>
       <form className="space-y-5" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
             Name
           </label>
           <input
@@ -85,7 +98,10 @@ const Profile: React.FC = () => {
         </div>
 
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="phone"
+            className="block text-sm font-medium text-gray-700"
+          >
             Phone
           </label>
           <input
@@ -113,7 +129,9 @@ const Profile: React.FC = () => {
             type="submit"
             disabled={isSaving}
             className={`w-full py-2 px-4 rounded-md text-white font-medium transition ${
-              isSaving ? "bg-blue-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+              isSaving
+                ? "bg-blue-300 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
             {isSaving ? "Saving..." : "Save"}

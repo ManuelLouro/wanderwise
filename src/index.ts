@@ -76,29 +76,6 @@ app.use(express.json());
 app.use(cors());
 app.use(auth(config));
 
-app.get("/profile", requiresAuth(), async (req: Request, res: Response) => {
-  try {
-    const user = req.oidc?.user;
-    if (!user || !user.sub) {
-      res.status(401).json({ error: "User not authenticated" });
-      return;
-    }
-
-    const profile = await prisma.profile.findUnique({
-      where: { auth0Id: user.sub },
-    });
-
-    if (!profile) {
-      res.status(404).json({ error: "Profile not found" });
-      return;
-    }
-
-    res.json(profile);
-  } catch (error) {
-    console.error("Error fetching profile:", error);
-    res.status(500).json({ error: "Failed to fetch profile" });
-  }
-});
 
 // Update current user's profile
 app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
@@ -109,7 +86,7 @@ app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
       return;
     }
 
-    const { name, email } = req.body;
+    const { name, email, phone } = req.body;
 
     if (typeof name !== "string") {
       res.status(400).json({ error: "Invalid name" });
@@ -118,7 +95,7 @@ app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
 
     const updated = await prisma.profile.update({
       where: { auth0Id: user.sub },
-      data: { name, email },
+      data: { name, email, phone },
     });
 
     res.json(updated);
@@ -128,27 +105,32 @@ app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
   }
 });
 
-app.get("/profile", requiresAuth(), async (req: Request, res: Response) => {
-  const user = req.oidc.user;
-  if (!user || !user.sub) {
-    return res.status(401).json({ error: "Not authenticated" });
-  }
-
-  try {
-    const profile = await prisma.profile.findUnique({
-      where: { auth0Id: user.sub },
-    });
-
-    if (!profile) {
-      return res.status(404).json({ error: "Profile not found" });
+app.get(
+  "/profile",
+  requiresAuth(),
+  (async (req, res) => {
+    const user = req.oidc?.user;
+    if (!user || !user.sub) {
+      return res.status(401).json({ error: "Not authenticated" });
     }
 
-    res.json(profile);
-  } catch (error) {
-    console.error("Error fetching profile:", error);
-    res.status(500).json({ error: "Failed to fetch profile" });
-  }
-});
+    try {
+      const profile = await prisma.profile.findUnique({
+        where: { auth0Id: user.sub },
+      });
+
+      if (!profile) {
+        return res.status(404).json({ error: "Profile not found" });
+      }
+
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      res.status(500).json({ error: "Failed to fetch profile" });
+    }
+  }) as express.RequestHandler
+);
+
 
 
 app.get("/login", (req, res) => res.oidc.login({ returnTo: "/" }));
