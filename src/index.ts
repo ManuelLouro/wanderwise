@@ -96,10 +96,26 @@ app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
       return;
     }
 
-    const updated = await prisma.profile.update({
+    const existing = await prisma.profile.findUnique({
       where: { auth0Id: user.sub },
-      data: { name, email, phone },
     });
+
+    let updated;
+    if (existing) {
+      updated = await prisma.profile.update({
+        where: { auth0Id: user.sub },
+        data: { name, email, phone },
+      });
+    } else {
+      updated = await prisma.profile.create({
+        data: {
+          auth0Id: user.sub,
+          name,
+          email,
+          phone,
+        },
+      });
+    }
 
     res.json(updated);
   } catch (error) {
