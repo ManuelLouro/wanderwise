@@ -101,23 +101,30 @@ const Profile: React.FC = () => {
     }
   }, [message, error]);
 
-  if (loading) return <div>Loading profile...</div>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-60 text-gray-500">
+        Loading profile...
+      </div>
+    );
 
   return (
-    <div className="p-6 max-w-md mx-auto bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-semibold mb-6 text-center">Profile</h1>
+    <div className="p-6 max-w-md mx-auto bg-white rounded-2xl shadow-lg border border-gray-100">
+      <h1 className="text-3xl font-bold mb-6 text-center text-blue-600">
+        Your Profile
+      </h1>
       {error && (
-        <div className="text-red-600 p-4 mb-4 rounded border border-red-400">
+        <div className="text-red-700 bg-red-100 border border-red-400 p-3 rounded mb-4 text-sm">
           {error}
         </div>
       )}
-      <form className="space-y-5" onSubmit={handleSubmit}>
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-semibold text-gray-700"
           >
-            Name
+            Full Name
           </label>
           <input
             id="name"
@@ -126,16 +133,17 @@ const Profile: React.FC = () => {
             value={formData.name}
             onChange={handleChange}
             disabled={!isEditing || isSaving}
-            className="mt-1 w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none disabled:bg-gray-100"
+            placeholder="Enter your full name"
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
         </div>
 
         <div>
           <label
             htmlFor="phone"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-semibold text-gray-700"
           >
-            Phone
+            Phone Number
           </label>
           <input
             id="phone"
@@ -144,7 +152,8 @@ const Profile: React.FC = () => {
             value={formData.phone}
             onChange={handleChange}
             disabled={!isEditing || isSaving}
-            className="mt-1 w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 outline-none disabled:bg-gray-100"
+            placeholder="e.g. +1 555 123 4567"
+            className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
         </div>
 
@@ -153,22 +162,22 @@ const Profile: React.FC = () => {
             type="button"
             onClick={() => setIsEditing(true)}
             disabled={isSaving}
-            className="w-full py-2 px-4 bg-gray-200 text-gray-800 rounded-md font-medium flex items-center justify-center gap-2 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-2 px-4 bg-blue-100 text-blue-700 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-200 transition disabled:opacity-50"
           >
             <Pencil className="w-4 h-4" />
-            Edit
+            Edit Profile
           </button>
         ) : (
           <button
             type="submit"
             disabled={isSaving}
-            className={`w-full py-2 px-4 rounded-md text-white font-medium transition ${
+            className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition ${
               isSaving
                 ? "bg-blue-300 cursor-not-allowed"
-                : "bg-blue-500 hover:bg-blue-600"
+                : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {isSaving ? "Saving..." : "Save"}
+            {isSaving ? "Saving..." : "Save Changes"}
           </button>
         )}
 
