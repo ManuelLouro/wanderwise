@@ -78,14 +78,14 @@ const Profile: React.FC = () => {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to update profile");
+        throw new Error("Failed to update profile4");
       }
 
       setMessage("Profile updated successfully!");
       setIsEditing(false);
     } catch (error: any) {
       console.error("Error saving profile:", error);
-      setError(error.message || "Failed to update profile4.");
+      setError(error.message || "Failed to update profile5.");
     } finally {
       setIsSaving(false);
     }
