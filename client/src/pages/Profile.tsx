@@ -39,13 +39,13 @@ const Profile: React.FC = () => {
           credentials: "include",
         });
 
-        if (!res.ok) throw new Error("Failed to fetch profile");
+        if (!res.ok) throw new Error("Failed to fetch profile1");
 
         const data = await res.json();
         setFormData({ name: data.name || "", phone: data.phone || "" });
       } catch (error: any) {
-        console.error("Failed to fetch profile:", error);
-        setError(error.message || "Failed to fetch profile");
+        console.error("Failed to fetch profile:2", error);
+        setError(error.message || "Failed to fetch profile3");
       } finally {
         setLoading(false);
       }
@@ -85,7 +85,7 @@ const Profile: React.FC = () => {
       setIsEditing(false);
     } catch (error: any) {
       console.error("Error saving profile:", error);
-      setError(error.message || "Failed to update profile.");
+      setError(error.message || "Failed to update profile4.");
     } finally {
       setIsSaving(false);
     }
