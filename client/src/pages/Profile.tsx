@@ -133,7 +133,7 @@ const Profile: React.FC = () => {
             value={formData.name}
             onChange={handleChange}
             disabled={!isEditing || isSaving}
-            placeholder="Enter your full name"
+            placeholder="e.g. John Doe"
             className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500"
           />
         </div>
