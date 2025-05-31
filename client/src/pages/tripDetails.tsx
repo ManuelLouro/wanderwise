@@ -168,7 +168,7 @@ const TripDetails: React.FC = () => {
         </div>
       )}
 
-      {/* Show the form conditionally */}
+      {/* Show the form conditionally  */}
       {isAdding && (
         <div className="mt-4 flex flex-col">
           <input
@@ -220,7 +220,7 @@ const TripDetails: React.FC = () => {
           onClick={() => setIsAdding(true)}
           className="mt-4 mb-2 bg-customTeal text-customBlue px-4 py-2 rounded-full font-bold shadow-xl mx-auto block"
         >
-          Add Event
+          Add new Event
         </button>
       )}
 
