@@ -125,7 +125,7 @@ const TripDetails: React.FC = () => {
         Events for Trip
       </h1>
 
-      {/* Hide events when adding a new one */}
+      {/* Hide events when adding a new ones */}
       {!isAdding && (
         <div className="space-y-4 flex flex-col">
           {events.length > 0 ? (
