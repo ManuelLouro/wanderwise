@@ -79,7 +79,6 @@ const TripDetails: React.FC = () => {
 
       console.log("Event added successfully");
 
-      // Clear form fields
       setNewEventName("");
       setNewEventDescription("");
       setNewEventLocation("");
@@ -107,7 +106,6 @@ const TripDetails: React.FC = () => {
 
       console.log("Event deleted successfully");
 
-      // Refresh events list
       fetchEvents();
     } catch (error) {
       console.error("Error deleting event:", error);
