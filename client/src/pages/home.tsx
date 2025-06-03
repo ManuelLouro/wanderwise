@@ -5,7 +5,7 @@ import FixedButton from "../components/fixedbutton.tsx";
 import { Calendar } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Timeline from "../components/ui/timeline.tsx";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; 
 
 type Trip = {
   id: string;
@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<string>("");
   const [events, setEvents] = useState<Event[]>([]);
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); 
 
   const fetchTrips = async () => {
     try {
