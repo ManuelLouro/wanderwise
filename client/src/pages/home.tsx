@@ -68,7 +68,7 @@ const HomePage: React.FC = () => {
   };
 
   const goToTripsPage = () => {
-    navigate("/trips"); // Navigate to trips page
+    navigate("/trips"); 
   };
 
   return (
