@@ -127,7 +127,7 @@ app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
 app.get("/profile", requiresAuth(), (async (req, res) => {
   const user = req.oidc?.user;
   if (!user || !user.sub) {
-    return res.status(401).json({ error: "Not authenticated" });
+    return res.status(401).json({ error: "Not authenticated2" });
   }
 
   try {
