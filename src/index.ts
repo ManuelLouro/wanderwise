@@ -120,7 +120,7 @@ app.put("/profile", requiresAuth(), async (req: Request, res: Response) => {
     res.json(updated);
   } catch (error) {
     console.error("Error updating profile:", error);
-    res.status(500).json({ error: "Failed to update profile" });
+    res.status(500).json({ error: "Failed to update profile1" });
   }
 });
 
