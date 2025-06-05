@@ -54,6 +54,13 @@ const Profile: React.FC = () => {
 
     fetchProfile();
   }, []);
+  
+  if (!formData.name.trim() || !formData.phone.trim()) {
+  setError("Name and phone are required.");
+  setIsSaving(false);
+  return;
+}
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
