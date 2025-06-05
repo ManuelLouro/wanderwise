@@ -25,6 +25,13 @@ const Profile: React.FC = () => {
     return session.tokens?.accessToken?.toString() || "";
   };
 
+  const formatPhone = (phone: string) =>
+    phone.replace(/[^\d+]/g, "").replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+
+  setFormData((prev) => ({
+    ...prev,
+    phone: formatPhone(prev.phone),
+  }));
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -56,11 +63,10 @@ const Profile: React.FC = () => {
   }, []);
 
   if (!formData.name.trim() || !formData.phone.trim()) {
-  setError("Name and phone are required.");
-  setIsSaving(false);
-  return;
-}
-
+    setError("Name and phone are required.");
+    setIsSaving(false);
+    return;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -110,11 +116,11 @@ const Profile: React.FC = () => {
   }, [message, error]);
 
   if (loading)
-  return (
-    <div className="flex items-center justify-center h-60 text-gray-500 gap-2">
-      <Loader className="animate-spin w-5 h-5" />
-      Loading profile...
-    </div>
+    return (
+      <div className="flex items-center justify-center h-60 text-gray-500 gap-2">
+        <Loader className="animate-spin w-5 h-5" />
+        Loading profile...
+      </div>
     );
 
   return (
@@ -169,7 +175,7 @@ const Profile: React.FC = () => {
         {!isEditing ? (
           <button
             type="button"
-             aria-label="Edit your profile"
+            aria-label="Edit your profile"
             onClick={() => setIsEditing(true)}
             disabled={isSaving}
             className="w-full py-2 px-4 bg-blue-100 text-blue-700 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-200 transition disabled:opacity-50"
