@@ -54,7 +54,7 @@ const Profile: React.FC = () => {
 
     fetchProfile();
   }, []);
-  
+
   if (!formData.name.trim() || !formData.phone.trim()) {
   setError("Name and phone are required.");
   setIsSaving(false);
@@ -169,6 +169,7 @@ const Profile: React.FC = () => {
         {!isEditing ? (
           <button
             type="button"
+             aria-label="Edit your profile"
             onClick={() => setIsEditing(true)}
             disabled={isSaving}
             className="w-full py-2 px-4 bg-blue-100 text-blue-700 rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-200 transition disabled:opacity-50"
