@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { CheckCircle, Pencil } from "lucide-react";
 import { fetchAuthSession } from "aws-amplify/auth";
+import { Loader } from "lucide-react";
 
 type ProfileData = {
   name: string;
@@ -102,10 +103,11 @@ const Profile: React.FC = () => {
   }, [message, error]);
 
   if (loading)
-    return (
-      <div className="flex items-center justify-center h-60 text-gray-500">
-        Loading profile...
-      </div>
+  return (
+    <div className="flex items-center justify-center h-60 text-gray-500 gap-2">
+      <Loader className="animate-spin w-5 h-5" />
+      Loading profile...
+    </div>
     );
 
   return (
