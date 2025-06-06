@@ -37,6 +37,12 @@ export default function Hamburger() {
           >
             Calendar
           </a>
+          <a
+            href="/Profile"
+            className="text-customTeal hover:text-customBlue py-2 px-4 rounded-full transition-all font-semibold"
+          >
+            Profile
+          </a>
         </div>
       )}
     </div>
