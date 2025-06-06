@@ -32,7 +32,7 @@ function NavBar() {
       <div className="ml-auto flex space-x-4">
         {!user ? (
           <>
-            {/* Login & Register both go to /login??????????? */}
+            {/* Login & Register both go to /login */}
             <button
               onClick={handleLogin}
               className="w-19 h-8 rounded-xl py-1 px-2 bg-customTeal text-customBlue font-medium"
