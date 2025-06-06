@@ -49,9 +49,9 @@ function NavBar() {
           </>
         ) : (
           <div className="flex items-center space-x-4">
-            {/* Universal static image instead of user-specific avatar */}
+           
             <img
-              src="../src/assets/user-icon.png" // Replace this path with your own generic user icon
+              src="../src/assets/user-icon.png" 
               alt="User Icon"
               className="h-10 w-10"
             />
